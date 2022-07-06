@@ -39,8 +39,6 @@ import {
 export const config: TemplateConfig = {
   stream: {
     $id: "locations",
-    // Specifies the exact data that each generated document will contain. This data is passed in
-    // directly as props to the default exported function.
     fields: [
       "id",
       "uid",
@@ -56,13 +54,12 @@ export const config: TemplateConfig = {
       "geocodedCoordinate",
       "services",
       "c_featuredFAQs.question",
-      "c_featuredFAQs.answer"
+      "c_featuredFAQs.answer",
+      "paymentOptions"
     ],
-    // Defines the scope of entities that qualify for this stream.
     filter: {
       entityTypes: ["location"],
     },
-    // The entity language profiles that documents will be generated for.
     localization: {
       locales: ["en"],
       primary: false,
@@ -70,22 +67,12 @@ export const config: TemplateConfig = {
   },
 };
 
-/**
- * Defines the path that the generated file will live at for production.
- *
- * NOTE: This currently has no impact on the local dev path. Local dev urls currently
- * take on the form: featureName/entityId
- */
+
 export const getPath: GetPath<TemplateProps> = (props) => {
   return `${props.document.id.toString()}`;
 };
 
-/**
- * This allows the user to define a function which will take in their template
- * data and procude a HeadConfig object. When the site is generated, the HeadConfig
- * will be used to generate the inner contents of the HTML document's <head> tag.
- * This can include the title, meta tags, script tags, etc.
- */
+
 export const getHeadConfig: GetHeadConfig<TemplateProps> = (props): HeadConfig => {
   return {
     title: props.document.name,
@@ -102,15 +89,7 @@ export const getHeadConfig: GetHeadConfig<TemplateProps> = (props): HeadConfig =
   };
 };
 
-/**
- * This is the main template. It can have any name as long as it's the default export.
- * The props passed in here are the direct stream document defined by `config`.
- *
- * There are a bunch of custom components being used from the src/components folder. These are
- * an example of how you could create your own. You can set up your folder structure for custom
- * components any way you'd like as long as it lives in the src folder (though you should not put
- * them in the src/templates folder as this is specific for true template files).
- */
+
 const Location: Default<TemplateProps> = (props) => {
   const { document } = props;
   const {
@@ -125,11 +104,14 @@ const Location: Default<TemplateProps> = (props) => {
     photoGallery,
     geocodedCoordinate,
     services,
-    c_featuredFAQs
+    c_featuredFAQs,
+    paymentOptions
   } = document;
 
   var formattedPhone = formatPhoneNumber(mainPhone);
   console.log(document);
+
+
 
   return (
     <>
@@ -166,6 +148,10 @@ const Location: Default<TemplateProps> = (props) => {
                 <p>{description}</p>
               </div>
             </div>
+        </div>
+        <div className="section">
+          <h2>Payment Options</h2>
+          {paymentOptions}
         </div>
         <div className="section">
           <PhotoGallery 
